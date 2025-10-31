@@ -1,7 +1,7 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import { db } from '../../firebase/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../lib/firebase.ts';
+import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 let contacts = [];
 try {
