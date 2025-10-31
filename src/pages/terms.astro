@@ -1,0 +1,32 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+---
+
+<Layout metadata={{ title: 'Terms of Service' }}>
+  <HeroText tagline="Terms of Service" title="Terms & Conditions" />
+  <div
+    class="flex flex-col max-w-4xl mx-auto rounded-lg backdrop-blur border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 shadow p-4 sm:p-6 lg:p-8 w-full"
+  >
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">1. Introduction</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+      Welcome to our application. These Terms of Service ('Terms') govern your use of our services. By accessing or using
+      our application, you agree to be bound by these Terms.
+    </p>
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">2. Our Services</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+      Our application provides a range of features and services. We grant you a limited, non-exclusive, non-transferable
+      license to use our services for your personal, non-commercial use.
+    </p>
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">3. User Conduct</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+      You agree not to use our application for any unlawful purpose or in any way that could harm our services or reputation.
+      You are solely responsible for your conduct and any data you transmit or display.
+    </p>
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">4. Disclaimer of Warranties</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300">
+      Our services are provided 'as is' without any warranties. We do not guarantee that our services will be uninterrupted,
+      secure, or error-free.
+    </p>
+  </div>
+</Layout>
