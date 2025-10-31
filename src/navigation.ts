@@ -1,4 +1,4 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { getPermalink, getBlogPermalink } from './utils/permalinks';
 
 export const headerData = {
   links: [
@@ -115,9 +115,7 @@ export const headerData = {
       ],
     },
   ],
-  actions: [
-    { text: 'Login / Sign up', href: getPermalink('/login') },
-  ],
+  actions: [],
 };
 
 export const footerData = {

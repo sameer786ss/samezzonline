@@ -1,0 +1,115 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+---
+
+<Layout metadata={{ title: 'Profile' }}>
+  <HeroText tagline="Profile" title="Manage Your Profile" />
+  <div
+    class="flex flex-col max-w-xl mx-auto rounded-lg backdrop-blur border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 shadow p-4 sm:p-6 lg:p-8 w-full"
+  >
+    <form id="profile-form">
+      <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-slate-800 dark:border-gray-600 dark:text-white"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          disabled
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm dark:bg-slate-700 dark:border-gray-600 dark:text-gray-400"
+        />
+      </div>
+      <div id="error-message" class="hidden text-red-500 text-sm mb-4"></div>
+      <div id="success-message" class="hidden text-green-500 text-sm mb-4"></div>
+      <button
+        type="submit"
+        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >Update Profile</button
+      >
+    </form>
+    <button
+      id="logout-button"
+      class="w-full flex justify-center py-2 px-4 mt-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+      >Log Out</button
+    >
+  </div>
+</Layout>
+
+<script type="module">
+  import { db, auth } from '../lib/firebase.ts?import';
+  import { collection, query, where, getDocs, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const profileForm = document.querySelector('#profile-form');
+  const nameInput = document.querySelector('#name');
+  const emailInput = document.querySelector('#email');
+  const errorMessage = document.querySelector('#error-message');
+  const successMessage = document.querySelector('#success-message');
+  const logoutButton = document.querySelector('#logout-button');
+
+  let currentUser = null;
+  let userDocRef = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      const q = query(collection(db, 'users'), where('email', '==', user.email));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        userDocRef = doc(db, 'users', userDoc.id);
+        nameInput.value = userDoc.data().name || '';
+        emailInput.value = user.email;
+      } else {
+        // Fallback for users signed in with Google/Phone that might not have a doc yet
+        nameInput.value = user.displayName || '';
+        emailInput.value = user.email || user.phoneNumber || '';
+      }
+    } else {
+      window.location.href = '/login';
+    }
+  });
+
+  profileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMessage.classList.add('hidden');
+    successMessage.classList.add('hidden');
+
+    const newName = nameInput.value;
+
+    try {
+      await updateProfile(currentUser, { displayName: newName });
+
+      if (userDocRef) {
+        await updateDoc(userDocRef, { name: newName });
+      }
+
+      const updatedUser = { ...JSON.parse(localStorage.getItem('loggedInUser')), name: newName };
+      localStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
+
+      successMessage.textContent = 'Profile updated successfully!';
+      successMessage.classList.remove('hidden');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+      errorMessage.classList.remove('hidden');
+    }
+  });
+
+  logoutButton.addEventListener('click', () => {
+    auth.signOut().then(() => {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = '/';
+    });
+  });
+</script>
