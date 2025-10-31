@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "samezz-3f3a9"
+  },
+  "targets": {
+    "samezz-3f3a9": {
+      "hosting": {
+        "samezzonline": [
+          "samezzonline"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

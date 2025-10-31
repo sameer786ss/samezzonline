@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "samezzonline",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
