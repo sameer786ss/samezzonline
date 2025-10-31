@@ -54,6 +54,10 @@ export const headerData = {
           text: 'Privacy policy',
           href: getPermalink('/privacy'),
         },
+        {
+          text: 'Admin Contacts',
+          href: getPermalink('/admin/contacts'),
+        },
       ],
     },
     {

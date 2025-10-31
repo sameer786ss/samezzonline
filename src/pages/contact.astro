@@ -14,31 +14,34 @@ const metadata = {
 
   <HeroText tagline="Contact" title="Let's Connect!" />
 
-  <ContactUs
-    id="form"
-    title="Drop us a message today!"
-    subtitle="For quicker answers, explore our FAQs section. You may find the solution you're looking  for right there! If not, our support team is delighted to help you."
-    inputs={[
-      {
-        type: 'text',
-        name: 'name',
-        label: 'Name',
-      },
-      {
-        type: 'email',
-        name: 'email',
-        label: 'Email',
-      },
-    ]}
-    textarea={{
-      label: 'Message',
-    }}
-    disclaimer={{
-      label:
-        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
-    }}
-    description="Our support team typically responds within 24 business hours."
-  />
+  <div id="contact-form">
+    <ContactUs
+      id="form"
+      title="Drop us a message today!"
+      subtitle="For quicker answers, explore our FAQs section. You may find the solution you're looking  for right there! If not, our support team is delighted to help you."
+      inputs={[
+        {
+          type: 'text',
+          name: 'name',
+          label: 'Name',
+        },
+        {
+          type: 'email',
+          name: 'email',
+          label: 'Email',
+        },
+      ]}
+      textarea={{
+        label: 'Message',
+        name: 'message',
+      }}
+      disclaimer={{
+        label:
+          'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
+      }}
+      description="Our support team typically responds within 24 business hours."
+    />
+  </div>
 
   <!-- Features2 Widget ************** -->
 
@@ -77,3 +80,32 @@ const metadata = {
     ]}
   />
 </Layout>
+
+<script type="module">
+  import { db } from '../../firebase/firebase';
+  import { collection, addDoc } from 'firebase/firestore';
+
+  const form = document.querySelector('#contact-form form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = form.name.value;
+    const email = form.email.value;
+    const message = form.message.value;
+
+    try {
+      const docRef = await addDoc(collection(db, 'contacts'), {
+        name: name,
+        email: email,
+        message: message,
+      });
+      console.log('Document written with ID: ', docRef.id);
+      alert('Message sent successfully!');
+      form.reset();
+    } catch (e) {
+      console.error('Error adding document: ', e);
+      alert('Error sending message.');
+    }
+  });
+</script>
